@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="def_todo_name">TODO##</string>
+    <string name="def_todo_date">00.00.0000</string>
+    <string name="button_text">✕</string>
+</resources>

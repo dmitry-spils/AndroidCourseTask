@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#00A000</color>
+    <color name="colorPrimaryDark">#007500</color>
+    <color name="colorAccent">#C08000</color>
+    <color name="colorText">#C0C0C0</color>
+
+    <color name="colorPrimaryGreen">#00A000</color>
+    <color name="colorPrimaryDarkGreen">#007500</color>
+    <color name="colorAccentGreen">#C08000</color>
+
+    <color name="colorPrimaryBlue">#0080f0</color>
+    <color name="colorPrimaryDarkBlue">#00539c</color>
+    <color name="colorAccentBlue">#d242aa</color>
+
+    <color name="colorPrimaryBlack">#707070</color>
+    <color name="colorPrimaryDarkBlack">#464646</color>
+    <color name="colorAccentBlack">#1b1b1b</color>
+
+    <color name="colorPrimaryRed">#e10000</color>
+    <color name="colorPrimaryDarkRed">#b11d1d</color>
+    <color name="colorAccentRed">#00be5f</color>
+
+    <color name="colorPrimaryYellow">#e6d40f</color>
+    <color name="colorPrimaryDarkYellow">#b1a520</color>
+    <color name="colorAccentYellow">#0096b1</color>
+
+    <color name="DatePickerPrimaty">#c2f1ff</color>
+    <color name="DatePickerDark">#70919b</color>
+    <color name="DatePickerAccent">#c2f1ff</color>
+</resources>

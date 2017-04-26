@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="name">TODO item name.</string>
+    <string name="contents">Nothing to do.</string>
+    <string name="date_day">Day:</string>
+    <string name="date_month">Month:</string>
+    <string name="date_year">Year:</string>
+    <string name="button_share">Share</string>
+    <string name="button_save">Save</string>
+    <string name="button_delete">Delete</string>
+    <string name="txt_date_day">Day</string>
+    <string name="txt_date_month">Month</string>
+    <string name="txt_date_year">Year</string>
+    <string name="txt_date">Date: DD/MM/YYYY</string>
+    <string name="input_date">Edit date</string>
+    <string name="txt_date_format">DD/MM/YYYY</string>
+</resources>

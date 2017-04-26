@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.oiltanker.test.MainActivity">
+
+    <item
+        android:title="@string/settings"
+        android:id="@+id/settings"
+        android:icon="@android:drawable/ic_menu_preferences"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:title="Sing in"
+        android:id="@+id/firebase_signin"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/firebase_signout"
+        android:title="Sing out"
+        app:showAsAction="never" />
+</menu>
