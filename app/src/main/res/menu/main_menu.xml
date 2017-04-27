@@ -10,10 +10,6 @@
         android:icon="@android:drawable/ic_menu_preferences"
         app:showAsAction="ifRoom"/>
     <item
-        android:title="Sing in"
-        android:id="@+id/firebase_signin"
-        app:showAsAction="never"/>
-    <item
         android:id="@+id/firebase_signout"
         android:title="Sing out"
         app:showAsAction="never" />

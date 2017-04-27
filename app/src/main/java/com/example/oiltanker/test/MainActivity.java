@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.v7.app.AppCompatActivity;
@@ -41,11 +42,11 @@ public class MainActivity extends AppCompatActivity {
     TodoAdapter TDadapter;
     private int currentTheme = 0;
     private boolean is_signedin = false;
-    private FirebaseAuth mAuth;
 
     private ListView mListVeiw = null;
 
     private static final int RC_SIGN_IN = 123;
+    private static boolean run = false;
 
     public static final void hideKeyboard(Activity act) {
         if (act != null && act.getCurrentFocus() != null) {
@@ -62,29 +63,38 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (!run) {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            run = true;
+        }
         super.onCreate(savedInstanceState);
+
         setTheme(ToDoDataManager.getTheme());
         setContentView(R.layout.activity_main);
+
 
         ToDoDataManager.giveContext(getApplicationContext());
         if (!ToDoDataManager.IsLoaded())
             ToDoDataManager.LoadAll();
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        mAuth = auth;
-        if (!ToDoDataManager.IsLoaded())
         if (auth.getCurrentUser() != null) {
+
+            if (!ToDoDataManager.IsLoaded()) {
+                TDadapter = new TodoAdapter(this);
+            } else TDadapter = ToDoDataManager.getAdapter();
+
             // already signed in
             Toast.makeText(this, "User singed in", Toast.LENGTH_LONG)
                     .show();
             is_signedin = true;
-            invalidateOptionsMenu();
-            ToDoDataManager.setWebTools(auth.getCurrentUser().getUid(), FirebaseStorage.getInstance(), FirebaseDatabase.getInstance());
+
         } else {
             // not signed in
             Toast.makeText(this, "User NOT singed in", Toast.LENGTH_LONG)
                     .show();
             is_signedin = false;
+            TDadapter = new TodoAdapter(this);
 
             new AlertDialog.Builder(this)
                     .setTitle("Firebase")
@@ -100,35 +110,17 @@ public class MainActivity extends AppCompatActivity {
                                             //.setTheme(getResources().getInteger(ToDoDataManager.getTheme()))
                                             .build(),
                                     RC_SIGN_IN);
-                            finish();
+                            //finish();
                         }
                     })
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            // do nothing
+                        finish();
                         }
                     })
                     //.setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
         }
-        //Log.d("LOL", Integer.toString(lol));
-
-        /*if (ToDoDataManager.size() == 0) {
-            Log.d("Loading DB contents", "Table WAS empty");
-            ToDoDataManager.add("Android", new Date(117, 2, 10), true, "", null);
-            ToDoDataManager.add("iOS", new Date(116, 3, 11), false, "", null);
-            ToDoDataManager.add("Windows", new Date(115, 4, 12), false, "", null);
-            ToDoDataManager.add("Linux", new Date(114, 5, 13), true, "", null);
-            ToDoDataManager.add("Ubuntu", new Date(113, 6, 14), true, "", null);
-            ToDoDataManager.add("Windows Phone", new Date(112, 7, 15), false, "", null);
-            ToDoDataManager.add("XOs", new Date(111, 8, 16), false, "", null);
-        } else
-            Log.d("Loading DB contents", "Table was NOT empty");*/
-
-        if (!ToDoDataManager.IsLoaded()) {
-            final TodoAdapter adapter = new TodoAdapter(this);
-            TDadapter = adapter;
-        } else TDadapter = ToDoDataManager.getAdapter();
 
         mListVeiw = (ListView) findViewById(R.id.todo_list);
         //mListVeiw.setAdapter(adapter);
@@ -159,19 +151,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        if (!ToDoDataManager.IsLoaded())
+        if (is_signedin) {
+            ToDoDataManager.setWebTools(FirebaseAuth.getInstance().getCurrentUser().getUid()/*, FirebaseStorage.getInstance(), FirebaseDatabase.getInstance()*/);
             ToDoDataManager.AddListeners();
-        //while (ToDoDataManager.values().size() == 0);
+        }
+        //if (!ToDoDataManager.IsLoaded() && is_signedin)
+        //    ToDoDataManager.AddListeners();
         mListVeiw.setAdapter(TDadapter);
-
-        /*if (mMenu != null)
-            if (is_signedin) {
-                mMenu.getItem(R.id.firebase_signin).setVisible(false);
-                mMenu.getItem(R.id.firebase_signout).setVisible(true);
-            } else  {
-                mMenu.getItem(R.id.firebase_signin).setVisible(true);
-                mMenu.getItem(R.id.firebase_signout).setVisible(false);
-            }*/
     }
 
     @Override
@@ -187,7 +173,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "All ok", Toast.LENGTH_LONG)
                         .show();
                 is_signedin = true;
-                MainActivity.this.invalidateOptionsMenu();
+
+                ToDoDataManager.setWebTools(FirebaseAuth.getInstance().getCurrentUser().getUid()/*, FirebaseStorage.getInstance(), FirebaseDatabase.getInstance()*/);
+                ToDoDataManager.AddListeners();
                 //finish();
                 return;
             } else {
@@ -213,6 +201,12 @@ public class MainActivity extends AppCompatActivity {
                             .show();
                     return;
                 }
+                try {
+                    wait(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                finish();
             }
 
             //showSnackbar(R.string.unknown_sign_in_response);
@@ -228,13 +222,6 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         //Log.d("LOL", "LOL\nLOL\nLOL\nLOL");
         //mMenu = menu;
-        if (mAuth.getCurrentUser() != null) {
-            menu.findItem(R.id.firebase_signin).setVisible(false);
-            menu.findItem(R.id.firebase_signout).setVisible(true);
-        } else  {
-            menu.findItem(R.id.firebase_signin).setVisible(true);
-            menu.findItem(R.id.firebase_signout).setVisible(false);
-        }
         //lol += 1;
         return true;
     }
@@ -259,22 +246,32 @@ public class MainActivity extends AppCompatActivity {
                                 is_signedin = false;
                                 MainActivity.this.invalidateOptionsMenu();
                                 //startActivity(new Intent(MainActivity.this, SignInActivity.class));
-                                //finish();
+                                new AlertDialog.Builder(MainActivity.this)
+                                        .setTitle("Firebase")
+                                        .setMessage("Do you want to use Firebase for online storage?")
+                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                startActivityForResult(
+                                                        // Get an instance of AuthUI based on the default app
+                                                        AuthUI.getInstance().createSignInIntentBuilder()
+                                                                .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                                                        new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                                                                .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                                                                //.setTheme(getResources().getInteger(ToDoDataManager.getTheme()))
+                                                                .build(),
+                                                        RC_SIGN_IN);
+                                            }
+                                        })
+                                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                finish();
+                                            }
+                                        })
+                                        //.setIcon(android.R.drawable.ic_dialog_alert)
+                                        .show();
                             }
                         });
                 break;
-            case R.id.firebase_signin:
-                startActivityForResult(
-                        // Get an instance of AuthUI based on the default app
-                        AuthUI.getInstance().createSignInIntentBuilder()
-                                .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                        new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-                                .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-                                //.setTheme(getResources().getInteger(ToDoDataManager.getTheme()))
-                                .build(),
-                        RC_SIGN_IN);
-                is_signedin = true;
-                MainActivity.this.invalidateOptionsMenu();
             default:
                 return super.onOptionsItemSelected(item);
         }

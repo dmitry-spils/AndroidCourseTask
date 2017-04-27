@@ -52,7 +52,7 @@ public class ToDoDataManager {
 
     private static String mUserId;
     private static FirebaseStorage mWebStorage;
-    private static FirebaseDatabase mWebDB;
+    //private static FirebaseDatabase mWebDB;
 
     private static DatabaseReference mUserRef;
     private static StorageReference mUserFiles;
@@ -205,6 +205,8 @@ public class ToDoDataManager {
             e.printStackTrace();
         }*/
         DatabaseReference elemRef = mUserRef.child(values.get(index).id);
+        if (!values.get(index).pic_name.equals("none"))
+            mUserFiles.child(values.get(index).pic_name).delete();
         elemRef.removeValue();
     }
 
@@ -250,6 +252,9 @@ public class ToDoDataManager {
                             Log.d("Error", e.toString());
                         }
                     });
+                } else {
+                    DatabaseReference elemRef = mUserRef.child(td.id);
+                    elemRef.setValue(new TDI(td.name, ToDoDBContract.iso8601Format.format(td.date), td.check, td.contents, pic_name));
                 }
 
                 return null;
@@ -290,15 +295,15 @@ public class ToDoDataManager {
         pref_editor.commit();
     }
 
-    public static void setWebTools(String UserId, FirebaseStorage storage, FirebaseDatabase database) {
+    public static void setWebTools(String UserId/*, final FirebaseStorage storage, FirebaseDatabase database*/) {
         mUserId = UserId;
-        mWebStorage = storage;
-        mWebDB = database;
+        mWebStorage = FirebaseStorage.getInstance();
+        FirebaseDatabase mWebDB = FirebaseDatabase.getInstance();
 
-        mWebDB.setPersistenceEnabled(true);
+        //mWebDB.setPersistenceEnabled(true);
 
-        mUserFiles = storage.getReference().child("users").child(mUserId);
-        mUserRef = database.getReference().child("users").child(mUserId);
+        mUserFiles = mWebStorage.getReference().child("users").child(mUserId);
+        mUserRef = mWebDB.getReference().child("users").child(mUserId);
         mUserRef.keepSynced(true);
     }
 
