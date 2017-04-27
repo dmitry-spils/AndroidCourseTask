@@ -236,10 +236,10 @@ public class ToDoContentsActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d("WHERE IS MY PERMISSIONS", "method is called");
+        /*Log.d("WHERE IS MY PERMISSIONS", "method is called");
         for (int i = 0; i < permissions.length; i++) {
             Log.d("ASKED PERMISSION LIST", "PERMISSION: " + permissions[i] + " -- " + ((grantResults[i] == PackageManager.PERMISSION_GRANTED) ? "GRANTED" : "NOT GRANTED"));
-        }
+        }*/
 
         switch (requestCode) {
 
@@ -284,10 +284,10 @@ public class ToDoContentsActivity extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("RESULT", "Getting image result");
+        //Log.d("RESULT", "Getting image result");
         switch (requestCode) {
             case 1:
-                Log.d("RESULT", "Getting image from device");
+                //Log.d("RESULT", "Getting image from device");
                 if (resultCode == RESULT_OK) {
 
                     Uri selectedImage = data.getData();
@@ -309,7 +309,7 @@ public class ToDoContentsActivity extends AppCompatActivity {
                 break;
 
             case 0:
-                Log.d("RESULT", "Getting image from camera");
+                //Log.d("RESULT", "Getting image from camera");
                 if (resultCode == RESULT_OK) {
                     Bitmap bitmap;
                     if (data.getExtras() != null)

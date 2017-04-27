@@ -62,7 +62,7 @@ public class ToDoDataManager {
 
     private static ByteArrayOutputStream getBytesFromBitmap(Bitmap bitmap) {
         if (bitmap == null) {
-            Log.d("LOL", "no shit");
+            //Log.d("LOL", "no shit");
             return null;
         }
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -164,7 +164,7 @@ public class ToDoDataManager {
         }*/
         DatabaseReference newRef = mUserRef.push();
         String id = newRef.getKey();
-        Log.d("NEW_ITEM_ID", id);
+        //Log.d("NEW_ITEM_ID", id);
 
         if (picture != null) {
             pic_name = GenImageName();
@@ -175,7 +175,7 @@ public class ToDoDataManager {
 
         DatabaseReference elemRef = mUserRef.child(id);
         elemRef.setValue(new TDI(name, ToDoDBContract.iso8601Format.format(date), check, contents, pic_name));
-        Log.d("DATE", "\n\n" + ToDoDBContract.iso8601Format.format(date) + "\n\n");
+        //Log.d("DATE", "\n\n" + ToDoDBContract.iso8601Format.format(date) + "\n\n");
 
         if (picture != null) {
             StorageReference image = mUserFiles.child(pic_name);
@@ -224,7 +224,7 @@ public class ToDoDataManager {
                     e.printStackTrace();
                 }*/
 
-                if (td.pic_name != null)
+                if (!td.pic_name.equals("none"))
                         mUserFiles.child(td.pic_name).delete();
 
                 if (td.picture != null) {
@@ -249,7 +249,7 @@ public class ToDoDataManager {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Toast.makeText(mContext, "Image push failure!", Toast.LENGTH_LONG).show();
-                            Log.d("Error", e.toString());
+                            //Log.d("Error", e.toString());
                         }
                     });
                 } else {
@@ -318,7 +318,7 @@ public class ToDoDataManager {
                     //long size = picRef.getMetadata().getResult().getSizeBytes();
 
                     final String index = dataSnapshot.getKey();
-                    Log.d("SOME_KEY", ".\n.\n.\n.\n.\n" + index + "\n.\n.\n.\n." + dataSnapshot.toString());
+                    //Log.d("SOME_KEY", ".\n.\n.\n.\n.\n" + index + "\n.\n.\n.\n." + dataSnapshot.toString());
                     for (ToDoItem td : values)
                         if (td.id.equals(index)) return;
 
@@ -335,7 +335,10 @@ public class ToDoDataManager {
                     values.add(tdi);
                     mTodoAdapter.notifyDataSetChanged();
 
+
                     final StorageReference picRef = mUserFiles.child(newTDI.TD_picture_id);
+
+                    if (!newTDI.TD_picture_id.equals("none"))
                     picRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                         @Override
                         public void onSuccess(StorageMetadata storageMetadata) {
@@ -345,7 +348,7 @@ public class ToDoDataManager {
                                     picRef = mUserFiles.child(td.pic_name);
                                     break;
                                 }*/
-                            Log.d("PIC_REF", picRef.getPath());
+                            //Log.d("PIC_REF", picRef.getPath());
 
                             final long size = storageMetadata.getSizeBytes();
                             picRef.getBytes(size).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -361,6 +364,7 @@ public class ToDoDataManager {
                             });
                         }
                     });
+
 
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -408,6 +412,8 @@ public class ToDoDataManager {
                     mTodoAdapter.notifyDataSetChanged();
 
                     final StorageReference picRef = mUserFiles.child(picture_id);
+
+                    if (!picture_id.equals("none"))
                     picRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                         @Override
                         public void onSuccess(StorageMetadata storageMetadata) {

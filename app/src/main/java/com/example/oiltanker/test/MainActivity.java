@@ -106,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
                                     AuthUI.getInstance().createSignInIntentBuilder()
                                             .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                                                     new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-                                            .setIsSmartLockEnabled(!BuildConfig.DEBUG)
                                             //.setTheme(getResources().getInteger(ToDoDataManager.getTheme()))
                                             .build(),
                                     RC_SIGN_IN);
@@ -185,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
                     //showSnackbar(R.string.sign_in_cancelled);
                     Toast.makeText(this, "I guess we going back", Toast.LENGTH_LONG)
                             .show();
+                    finish();
                     return;
                 }
 
@@ -192,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
                     //showSnackbar(R.string.no_internet_connection);
                     Toast.makeText(this, "No Network", Toast.LENGTH_LONG)
                             .show();
+                    finish();
                     return;
                 }
 
@@ -199,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
                     //showSnackbar(R.string.unknown_error);
                     Toast.makeText(this, "Unknown error", Toast.LENGTH_LONG)
                             .show();
+                    finish();
                     return;
                 }
                 try {
@@ -256,7 +258,6 @@ public class MainActivity extends AppCompatActivity {
                                                         AuthUI.getInstance().createSignInIntentBuilder()
                                                                 .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                                                                         new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-                                                                .setIsSmartLockEnabled(!BuildConfig.DEBUG)
                                                                 //.setTheme(getResources().getInteger(ToDoDataManager.getTheme()))
                                                                 .build(),
                                                         RC_SIGN_IN);
